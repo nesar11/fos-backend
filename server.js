@@ -3,10 +3,11 @@ const app = express();
 const ejs = require('ejs');
 const expressLayout = require('express-ejs-layouts');
 const path = require('path');
+const PORT = process.env.PORT|| 3000;
 const mongoose = require('mongoose');
 const config = require('./app/config/DB');
-const PORT = process.env.PORT|| 3000;
 
+// database connection
 mongoose.Promise = global.Promise;
 mongoose.connect(config.DB, {
   useNewUrlParser: true,
@@ -16,7 +17,7 @@ mongoose.connect(config.DB, {
   err => { console.log('Can not connect to the database'+ err)}
 );
 
-
+// front end direction
 app.use(express.static('public'));
 
 
