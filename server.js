@@ -9,44 +9,37 @@ const mongoose = require('mongoose');
 const settings = require('./app/config/DB');
 const session = require('express-session');
 const flash = require('express-flash');
-const MongoDBStore = require('connect-mongodb-session')(session);
-
+const MongoDbStore = require('connect-mongo')(session)
 // var app = express();
 
+// Database connection
+mongoose.connect(process.env.MONGO_CONNECTION_URL);
+const connection = mongoose.connection;
+mongoose.connection
+    .once('open', function () {
+      console.log('MongoDB running');
+    })
+    .on('error', function (err) {
+      console.log(err);
+    });
+
+// Session store
+let mongoStore = new MongoDbStore({
+  mongooseConnection: connection,
+                collection: 'sessions'
+ })
 
 
-// database connection
-mongoose.Promise = global.Promise;
-mongoose.connect(settings.DB, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true
-  }).then(
-  () => {console.log('Database is connected') },
-  err => { console.log('Can not connect to the database'+ err)}
-);
 
-
-var store = new MongoDBStore({
-  uri: process.env.MONGO_CONNECTION_UR,
-  // uri: 'mongodb://localhost:27017/fos_db',
-  collection: 'mySessions'
-});
-
-// Catch errors
-store.on('error', function(error) {
-  console.log(error);
-});
-
-
-app.use(require('express-session')({
-  secret: 'This is a secret',
-  cookie: {
-    maxAge: 1000 * 60 * 60 * 24 * 7 // 1 week
-  },
-  store: store,
-  resave: true,
-  saveUninitialized: true
-}));
+            
+// Session config
+app.use(session({
+  secret: process.env.COOKIE_SECRET,
+  resave: false,
+  store: mongoStore,
+  saveUninitialized: false,
+  cookie: { maxAge: 1000 * 60 * 60 * 24 } // 24 hour
+}))
 
 
 app.use(flash());
