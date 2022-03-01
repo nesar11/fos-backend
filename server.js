@@ -4,7 +4,7 @@ const app = express();
 const ejs = require('ejs');
 const expressLayout = require('express-ejs-layouts');
 const path = require('path');
-const PORT = process.env.PORT|| 3004;
+const PORT = process.env.PORT|| 3001;
 const mongoose = require('mongoose');
 const settings = require('./app/config/DB');
 const session = require('express-session');
@@ -25,8 +25,8 @@ mongoose.connection
 
 // Session store
 let mongoStore = new MongoDbStore({
-  mongooseConnection: connection,
-                collection: 'sessions'
+    mongooseConnection: connection,
+    collection: 'sessions'
  })
 
 
@@ -45,6 +45,12 @@ app.use(session({
 app.use(flash());
 // front end direction
 app.use(express.static('public'));
+app.use(express.json());
+app.use((req, res, next) => {
+  res.locals.session = req.session
+  next()
+
+})
 
 
 
