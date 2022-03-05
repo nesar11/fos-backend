@@ -41,3 +41,12 @@ addToCart.forEach((btn)=>{
 
     })
 })
+
+// remove alert message
+
+const alertMsg = document.querySelector('#success-alert')
+if(alertMsg){
+    setTimeout(()=>{
+        alertMsg.remove()
+    }, 2000)
+}

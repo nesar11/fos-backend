@@ -18,6 +18,11 @@ app.post('/logout', authController().logout);
 app.get('/cart', cartController().index);
 app.post('/update-cart', cartController().update);
 app.post('/orders', orderController().store);
+
+// customer routes
+app.post('/orders', orderController().store);
+
+app.get('/customer/orders', orderController().index)
     
 }
 module.exports= initRoutes
